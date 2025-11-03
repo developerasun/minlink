@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!-- set global theme from daisy ui -->
+<html lang="en" data-theme="halloween">
+  <!-- HEAD -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minlink</title>
+
+    <link
+      rel="shortcut icon"
+      href="../assets/favicon.png"
+      type="image/x-icon"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"
+      defer
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"
+      defer
+    ></script>
+  </head>
+
+  <!-- BODY -->
+  <body
+    id="body"
+    class="h-screen w-full max-w-9/10 sm:max-w-5/6 md:max-w-4/6 md:max-w-3/6 xl:max-w-2/6 mx-auto"
+  >
+    <!-- NAVBAR -->
+    <div class="h-[12.5vh] navbar bg-base-100 shadow-sm">
+      <div class="flex items-center flex-1">
+        <img src="../assets/favicon.png" width="50" height="50" alt="github" />
+        <a class="btn btn-ghost text-4xl -ml-2">Minlink</a>
+      </div>
+      <div class="flex-none">
+        <ul class="menu menu-horizontal px-1">
+          <li>
+            <details>
+              <summary>Network</summary>
+              <ul class="bg-base-200 rounded-t-none p-2 z-40">
+                <li class="w-24">
+                  <a>
+                    <img
+                      src="../assets/ethereum.svg"
+                      width="15"
+                      height="20"
+                      alt="ethereum"
+                    />
+                    Mainnet
+                  </a>
+                </li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <main class="h-[78vh] border-1 rounded-md">CONTENT HERE</main>
+
+    <!-- FOOTER -->
+    <footer
+      class="h-fit border-1 rounded-md footer sm:footer-horizontal bg-neutral text-neutral-content items-center p-4"
+    >
+      <aside class="grid-flow-col items-center justify-self-center">
+        <a href="https://github.com/developerasun/minlink" target="_blank">
+          <img
+            src="../assets/github-mark-white.png"
+            width="25"
+            height="25"
+            alt="github"
+          />
+        </a>
+        <p>Copyright © 2025 - All right reserved</p>
+      </aside>
+    </footer>
+  </body>
+</html>
