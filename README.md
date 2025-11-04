@@ -6,3 +6,7 @@
 Lightweight Chainlink price feed alternative.
 
 Targeting stable coins specifically.
+
+## Reference
+
+- [optimism status page](https://status.optimism.io/)
