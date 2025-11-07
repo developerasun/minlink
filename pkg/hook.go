@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/minlink/internal/constant"
+	"github.com/developerasun/minlink/internal/constant"
 	"github.com/shopspring/decimal"
 )
 

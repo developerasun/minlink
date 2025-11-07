@@ -1,4 +1,4 @@
-module github.com/minlink
+module github.com/developerasun/minlink
 
 go 1.25.0
 

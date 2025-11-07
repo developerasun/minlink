@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
+	apiController "github.com/developerasun/minlink/internal/api"
+	"github.com/developerasun/minlink/internal/constant"
 	"github.com/gin-gonic/gin"
-	apiController "github.com/minlink/internal/api"
-	"github.com/minlink/internal/constant"
 
-	docs "github.com/minlink/docs"
+	docs "github.com/developerasun/minlink/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
