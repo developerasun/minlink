@@ -25,6 +25,26 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/api/crawl": {
+            "get": {
+                "description": "Get server health status",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "api"
+                ],
+                "summary": "visit tradingview and extract daily dollar index",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_api.CrawlResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/health": {
             "get": {
                 "description": "Get server health status",
@@ -47,6 +67,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "internal_api.CrawlResponse": {
+            "type": "object",
+            "properties": {
+                "dxy": {
+                    "type": "string"
+                }
+            }
+        },
         "internal_api.HealthResponse": {
             "type": "object",
             "properties": {
