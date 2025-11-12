@@ -7,6 +7,18 @@ Lightweight Chainlink price feed alternative.
 
 Targeting stable coins specifically.
 
+## Why
+
+TBD
+
+## How
+
+TBD
+
+## For Whom
+
+TBD
+
 ## Reference
 
 - [optimism status page](https://status.optimism.io/)
