@@ -7,3 +7,7 @@ import (
 type HealthResponse struct {
 	Message string `json:"message"`
 }
+
+type CrawlResponse struct {
+	Dxy string `json:"dxy"`
+}

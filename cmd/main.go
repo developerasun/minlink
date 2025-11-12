@@ -58,6 +58,7 @@ func main() {
 
 	api := router.Group(constant.ROUTE_API)
 	api.GET("/health", apiController.Health)
+	api.GET("/crawl", apiController.Crawl)
 
 	router.Run(":" + os.Getenv("PORT"))
 	log.Println("main.go: router started")
