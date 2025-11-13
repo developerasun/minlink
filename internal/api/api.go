@@ -2,8 +2,11 @@ package api
 
 import (
 	"log"
+	"math/rand"
 	"net/http"
+	"strconv"
 
+	"github.com/developerasun/minlink/internal/constant"
 	"github.com/developerasun/minlink/pkg"
 	"github.com/gin-gonic/gin"
 )
@@ -40,6 +43,20 @@ func Crawl(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, CrawlResponse{
 		Dxy: dxy,
+	})
+}
+
+// Health godoc
+// @Summary Send target index stats as streams
+// @Description use server side event to dynamically render target data
+// @Tags api
+// @Produce json
+// @Success 200 {object} SseStatsResponse
+// @Router /api/sse_stats [get]
+func RenderStats(ctx *gin.Context) {
+
+	ctx.SSEvent(constant.SSE_STATS, SseStatsResponse{
+		Data: strconv.Itoa(rand.Int()),
 	})
 }
 

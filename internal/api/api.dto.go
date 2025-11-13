@@ -11,3 +11,7 @@ type HealthResponse struct {
 type CrawlResponse struct {
 	Dxy string `json:"dxy"`
 }
+
+type SseStatsResponse struct {
+	Data string `json:"data"`
+}
