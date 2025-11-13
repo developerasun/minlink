@@ -64,6 +64,26 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/sse_stats": {
+            "get": {
+                "description": "use server side event to dynamically render target data",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "api"
+                ],
+                "summary": "Send target index stats as streams",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_api.SseStatsResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -79,6 +99,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api.SseStatsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
                     "type": "string"
                 }
             }
