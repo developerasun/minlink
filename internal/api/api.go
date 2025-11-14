@@ -1,8 +1,10 @@
 package api
 
 import (
+	"encoding/json"
+	"io"
 	"log"
-	"math/rand"
+	// "math/rand"
 	"net/http"
 	"time"
 
@@ -73,29 +75,34 @@ func CrawlDaiPrice(ctx *gin.Context) {
 // @Success 200 {object} SseStatsResponse
 // @Router /api/sse_stats [get]
 func RenderStats(ctx *gin.Context) {
-	ticker := time.NewTicker(time.Second * 5)
+	ticker := time.NewTicker(time.Second * 30)
 	defer ticker.Stop()
 
 	for {
 		select {
 		case <-ticker.C:
 			log.Println("ticked")
+			request, _ := http.NewRequest(http.MethodGet, constant.ENDPOINT_COINS, nil)
+			client := http.Client{}
+			response, _ := client.Do(request)
+
+			raw, _ := io.ReadAll(response.Body)
+			response.Body.Close() // @dev prevent FD leak
+
+			var data CoinGeckoApiResponse
+			if err := json.Unmarshal(raw, &data); err != nil {
+				log.Println("RenderStats: " + err.Error())
+			}
 
 			// @dev queue stream data to response buffer
 			ctx.SSEvent(constant.SSE_STATS, SseStatsResponse{
-				Data: CoinGeckoApiResponse{
-					Dai:       Currency{Usd: rand.Float32()},
-					PaypalUsd: Currency{Usd: rand.Float32()},
-					Tether:    Currency{Usd: rand.Float32()},
-					UsdCoin:   Currency{Usd: rand.Float32()},
-					Usds:      Currency{Usd: rand.Float32()},
-				},
+				Data: data,
 			})
 
 			// @dev deliver the buffer to client
 			ctx.Writer.Flush()
 
-		case <-time.After(time.Second * 10):
+		case <-time.After(time.Minute * 1):
 			log.Println("timed out")
 			return
 
