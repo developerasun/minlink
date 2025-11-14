@@ -5,11 +5,19 @@
 
 Lightweight Chainlink price feed alternative.
 
-Targeting stable coins specifically.
+Targeting stable coins on Ethereum Mainnet specifically.
 
 ## Why
 
-TBD
+Stable means that it intends to not change easily.
+
+Then is stable coin really stable?
+
+<div align="center">
+
+<img src="./docs/readme/1.jpg" width="49%" />
+
+</div>
 
 ## How
 
@@ -18,6 +26,16 @@ TBD
 ## For Whom
 
 TBD
+
+## Tech stack
+
+| Section | Details                      |
+| ------- | ---------------------------- |
+| Client  | `htmx`, `tailwind`, `daiyui` |
+| Server  | `gin`, `swagger`             |
+| Infra   | `Docker`, `docker swarm`     |
+
+---
 
 ## Reference
 
