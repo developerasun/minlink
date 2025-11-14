@@ -4,6 +4,10 @@ const (
 	ROUTE_ROOT = "/"
 	ROUTE_API  = "/api"
 
+	// depegging alert
+	ALERT_DEPEGGING_MIN float32 = 0.990
+	ALERT_DEPEGGING_MAX float32 = 1.010
+
 	// eth mainnet
 	ETH_DECIMAL   float64 = 1e18
 	USDT_DECIMAL  float64 = 1e6
