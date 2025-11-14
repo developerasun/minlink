@@ -31,10 +31,17 @@
       src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"
       defer
     ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.4"
+      integrity="sha384-A986SAtodyH8eg8x8irJnYUk7i9inVQqYigD6qZ9evobksGNIXfeFvDwLSHcp31N"
+      crossorigin="anonymous"
+      defer
+    ></script>
   </head>
 
   <!-- BODY -->
   <body
+    hx-ext="sse"
     id="body"
     class="font-[elza] h-screen w-full max-w-9/10 sm:max-w-5/6 md:max-w-4/6 md:max-w-3/6 xl:max-w-2/6 mx-auto"
   >
@@ -69,7 +76,20 @@
     </div>
 
     <!-- MAIN -->
-    <main class="h-[78vh] border-1 rounded-md">CONTENT HERE</main>
+    <main class="h-[78vh] border-1 rounded-md">
+      <div hx-ext="sse" sse-connect="/api/sse_stats" sse-swap="sse_stats">
+        Contents of this box will be updated in real time with every SSE message
+        received from the chatroom.
+      </div>
+
+      <!-- TODO set status bar -->
+      <div class="flex gap-1">
+        <div class="w-2 h-6 rounded bg-green-500"></div>
+        <div class="w-2 h-6 rounded bg-green-500"></div>
+        <div class="w-2 h-6 rounded bg-yellow-500"></div>
+        <div class="w-2 h-6 rounded bg-red-500"></div>
+      </div>
+    </main>
 
     <!-- FOOTER -->
     <footer

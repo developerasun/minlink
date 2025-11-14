@@ -9,5 +9,9 @@ type HealthResponse struct {
 }
 
 type CrawlResponse struct {
-	Dxy string `json:"dxy"`
+	Data string `json:"data"`
+}
+
+type SseStatsResponse struct {
+	Data string `json:"data"`
 }
