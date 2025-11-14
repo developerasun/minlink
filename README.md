@@ -7,6 +7,12 @@ Lightweight Chainlink price feed alternative.
 
 Targeting stable coins on Ethereum Mainnet specifically.
 
+<div align="center">
+
+<img src="./docs/readme/2.png" width="49%" />
+
+</div>
+
 ## Why
 
 Stable means that it intends to not change easily.
