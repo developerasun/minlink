@@ -25,7 +25,27 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/api/crawl": {
+        "/api/dai": {
+            "get": {
+                "description": "Get dai coin price",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "api"
+                ],
+                "summary": "visit metamask and extract dai token price at the moment",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_api.CrawlResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dxy": {
             "get": {
                 "description": "Get server health status",
                 "produces": [
@@ -90,7 +110,7 @@ const docTemplate = `{
         "internal_api.CrawlResponse": {
             "type": "object",
             "properties": {
-                "dxy": {
+                "data": {
                     "type": "string"
                 }
             }
