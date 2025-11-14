@@ -4,6 +4,10 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"math/rand"
+	"os"
+	"strconv"
+
 	// "math/rand"
 	"net/http"
 	"time"
@@ -75,29 +79,52 @@ func CrawlDaiPrice(ctx *gin.Context) {
 // @Success 200 {object} SseStatsResponse
 // @Router /api/sse_stats [get]
 func RenderStats(ctx *gin.Context) {
-	ticker := time.NewTicker(time.Second * 30)
+	isProduction := os.Getenv("PRODUCTION") == "true"
+	_interval := os.Getenv("SSE_INTERVAL")
+
+	interval, aErr := strconv.Atoi(_interval)
+	if aErr != nil {
+		log.Println("RenderStats: " + aErr.Error())
+	}
+	ticker := time.NewTicker(time.Second * time.Duration(interval))
 	defer ticker.Stop()
 
 	for {
 		select {
 		case <-ticker.C:
-			log.Println("ticked")
-			request, _ := http.NewRequest(http.MethodGet, constant.ENDPOINT_COINS, nil)
-			client := http.Client{}
-			response, _ := client.Do(request)
 
-			raw, _ := io.ReadAll(response.Body)
-			response.Body.Close() // @dev prevent FD leak
+			if isProduction {
+				log.Println("requesting real coingekco api in production")
 
-			var data CoinGeckoApiResponse
-			if err := json.Unmarshal(raw, &data); err != nil {
-				log.Println("RenderStats: " + err.Error())
+				request, _ := http.NewRequest(http.MethodGet, constant.ENDPOINT_COINS, nil)
+				client := http.Client{}
+				response, _ := client.Do(request)
+
+				raw, _ := io.ReadAll(response.Body)
+				response.Body.Close() // @dev prevent FD leak
+
+				var data CoinGeckoApiResponse
+				if err := json.Unmarshal(raw, &data); err != nil {
+					log.Println("RenderStats: " + err.Error())
+				}
+
+				// @dev queue stream data to response buffer
+				ctx.SSEvent(constant.SSE_STATS, SseStatsResponse{
+					Data: data,
+				})
+			} else {
+				log.Println("immitating dummy coingekco api in development")
+
+				ctx.SSEvent(constant.SSE_STATS, SseStatsResponse{
+					Data: CoinGeckoApiResponse{
+						Dai:       Currency{Usd: rand.Float32()},
+						PaypalUsd: Currency{Usd: rand.Float32()},
+						Tether:    Currency{Usd: rand.Float32()},
+						UsdCoin:   Currency{Usd: rand.Float32()},
+						Usds:      Currency{Usd: rand.Float32()},
+					},
+				})
 			}
-
-			// @dev queue stream data to response buffer
-			ctx.SSEvent(constant.SSE_STATS, SseStatsResponse{
-				Data: data,
-			})
 
 			// @dev deliver the buffer to client
 			ctx.Writer.Flush()
