@@ -1,10 +1,8 @@
 package constant
 
 const (
-	MAX_SOCKET_CLIENT                      = 500
 	ROUTE_ROOT                             = "/"
 	ROUTE_API                              = "/api"
-	ROUTE_VIEW                             = "/view"
 	FilePermUserReadWrite                  = 0600
 	FilePermUserReadWriteGroupRead         = 0644
 	FilePermExecutable                     = 0755
@@ -14,4 +12,11 @@ const (
 
 	// sse event name list
 	SSE_STATS = "sse_stats"
+
+	// coins endpoint
+	ENDPOINT_USDT  = ""
+	ENDPOINT_USDC  = ""
+	ENDPOINT_USDS  = "https://api.coingecko.com/api/v3/simple/price?ids=usds&vs_currencies=usd"
+	ENDPOINT_DAI   = "https://api.coingecko.com/api/v3/simple/price?ids=dai&vs_currencies=usd"
+	ENDPOINT_PYUSD = ""
 )
