@@ -4,7 +4,6 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"strconv"
 
 	"github.com/developerasun/minlink/internal/constant"
 	"github.com/developerasun/minlink/pkg"
@@ -75,7 +74,13 @@ func CrawlDaiPrice(ctx *gin.Context) {
 func RenderStats(ctx *gin.Context) {
 
 	ctx.SSEvent(constant.SSE_STATS, SseStatsResponse{
-		Data: strconv.Itoa(rand.Int()),
+		Data: CoinGeckoApiResponse{
+			Dai:       Currency{Usd: rand.Float32()},
+			PaypalUsd: Currency{Usd: rand.Float32()},
+			Tether:    Currency{Usd: rand.Float32()},
+			UsdCoin:   Currency{Usd: rand.Float32()},
+			Usds:      Currency{Usd: rand.Float32()},
+		},
 	})
 }
 
