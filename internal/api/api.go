@@ -25,24 +25,43 @@ func Health(ctx *gin.Context) {
 	})
 }
 
-// Crawl godoc
+// CrawlDollarIndex godoc
 // @Summary visit tradingview and extract daily dollar index
 // @Description Get server health status
 // @Tags api
 // @Produce json
 // @Success 200 {object} CrawlResponse
-// @Router /api/crawl [get]
-func Crawl(ctx *gin.Context) {
-	ctx.Header("Access-Control-Allow-Origin", "*")
+// @Router /api/dxy [get]
+func CrawlDollarIndex(ctx *gin.Context) {
+	dxy, rcErr := pkg.CrawlDollarIndex()
 
-	dxy, rcErr := pkg.RunCrawler()
 	if rcErr != nil {
-		log.Println(`Crawl: failed to run a crawler`)
+		log.Println(`CrawlDollarIndex: failed to run a crawler`)
 		ctx.Error(rcErr)
 	}
 
 	ctx.JSON(http.StatusOK, CrawlResponse{
-		Dxy: dxy,
+		Data: dxy,
+	})
+}
+
+// CrawlDaiPrice godoc
+// @Summary visit metamask and extract dai token price at the moment
+// @Description Get dai coin price
+// @Tags api
+// @Produce json
+// @Success 200 {object} CrawlResponse
+// @Router /api/dai [get]
+func CrawlDaiPrice(ctx *gin.Context) {
+	dai, rcErr := pkg.CrawlDaiPrice()
+
+	if rcErr != nil {
+		log.Println(`CrawlDaiPrice: failed to run a crawler`)
+		ctx.Error(rcErr)
+	}
+
+	ctx.JSON(http.StatusOK, CrawlResponse{
+		Data: dai,
 	})
 }
 
