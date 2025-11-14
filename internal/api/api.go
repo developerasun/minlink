@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"math/rand"
@@ -115,15 +116,63 @@ func RenderStats(ctx *gin.Context) {
 			} else {
 				log.Println("immitating dummy coingekco api in development")
 
-				ctx.SSEvent(constant.SSE_STATS, SseStatsResponse{
-					Data: CoinGeckoApiResponse{
-						Dai:       Currency{Usd: rand.Float32()},
-						PaypalUsd: Currency{Usd: rand.Float32()},
-						Tether:    Currency{Usd: rand.Float32()},
-						UsdCoin:   Currency{Usd: rand.Float32()},
-						Usds:      Currency{Usd: rand.Float32()},
-					},
-				})
+				data := CoinGeckoApiResponse{
+					Dai:       Currency{Usd: rand.Float32()},
+					PaypalUsd: Currency{Usd: rand.Float32()},
+					Tether:    Currency{Usd: rand.Float32()},
+					UsdCoin:   Currency{Usd: rand.Float32()},
+					Usds:      Currency{Usd: rand.Float32()},
+				}
+
+				alert := func(value float32) string {
+					if value <= constant.ALERT_DEPEGGING_MIN || value >= constant.ALERT_DEPEGGING_MAX {
+						return `
+						  <div class="w-4 flex justify-center">
+								<div class="w-4 h-4 rounded-full bg-red-500"></div>
+							</div>
+						`
+					}
+					return `
+						<div class="w-4 flex justify-center">
+							<div class="w-4 h-4 rounded-full bg-green-500"></div>
+						</div>
+					`
+				}
+
+				_html := fmt.Sprintf(`
+				<div class="flex justify-center">
+					<ul class="flex flex-col p-6 text-3xl gap-2">
+						<li class="flex items-center gap-2">
+							%s
+							<div>DAI: %f</div>
+						</li>
+						<li class="flex items-center gap-2">
+							%s
+							<div>PYUSD: %f</div>
+						</li>
+						<li class="flex items-center gap-2">
+							%s
+							<div>USDT: %f</div>
+						</li>
+						<li class="flex items-center gap-2">
+							%s
+							<div>USDC: %f</div>
+						</li>
+						<li class="flex items-center gap-2">
+							%s
+							<div>USDS: %f</div>
+						</li>
+					</ul>
+				</div>
+				`,
+					alert(data.Dai.Usd), data.Dai.Usd,
+					alert(data.PaypalUsd.Usd), data.PaypalUsd.Usd,
+					alert(data.Tether.Usd), data.Tether.Usd,
+					alert(data.UsdCoin.Usd), data.UsdCoin.Usd,
+					alert(data.Usds.Usd), data.Usds.Usd,
+				)
+
+				ctx.SSEvent(constant.SSE_STATS, _html)
 			}
 
 			// @dev deliver the buffer to client

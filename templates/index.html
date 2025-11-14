@@ -76,18 +76,36 @@
     </div>
 
     <!-- MAIN -->
-    <main class="h-[78vh] border-1 rounded-md">
+    <main
+      class="h-[78vh] border-1 rounded-md flex flex-col justify-center gap-12"
+    >
+      <div>
+        <h1 class="mt-8 text-[50px] text-center">Pegging Status</h1>
+        <ul class="mt-2 flex justify-center items-center gap-2">
+          <li class="flex items-center gap-2">
+            <div class="w-4 flex justify-center">
+              <div class="w-4 h-4 rounded-full bg-green-500"></div>
+            </div>
+            <span>Healthy</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <div class="w-4 flex justify-center">
+              <div class="w-4 h-4 rounded-full bg-red-500"></div>
+            </div>
+            <span>Danger</span>
+          </li>
+        </ul>
+        <div
+          class="my-2 border-t border-gray-300 w-1/2 mx-auto opacity-75"
+        ></div>
+        <div class="w-1/2 mx-auto opacity-75 text-center">
+          *Min: 0.990 USD | Max: 1.010 USD
+        </div>
+      </div>
+
       <div hx-ext="sse" sse-connect="/api/sse_stats" sse-swap="sse_stats">
         Contents of this box will be updated in real time with every SSE message
         received from the chatroom.
-      </div>
-
-      <!-- TODO set status bar -->
-      <div class="flex gap-1">
-        <div class="w-2 h-6 rounded bg-green-500"></div>
-        <div class="w-2 h-6 rounded bg-green-500"></div>
-        <div class="w-2 h-6 rounded bg-yellow-500"></div>
-        <div class="w-2 h-6 rounded bg-red-500"></div>
       </div>
     </main>
 
