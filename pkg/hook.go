@@ -1,60 +1,72 @@
 package pkg
 
 import (
-	"errors"
 	"fmt"
-	"log"
-	"strconv"
-	"strings"
 
 	"github.com/developerasun/minlink/internal/constant"
-	"github.com/shopspring/decimal"
 )
 
-func validateAddress(address string) error {
-	_, found := strings.CutPrefix(address, "0x")
-
-	if !found || len(address) != 42 {
-		error := errors.New("validateAddress.go: invalid ethereum address")
-		return error
-	}
-
-	return nil
+type Currency struct {
+	Usd float32 `json:"usd"`
 }
 
-/*
-@return e.g `1000000000000000000`
-*/
-func toWei(_amount string, _tokenType string) string {
-	amount, err := decimal.NewFromString(_amount)
-
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	targetDecimal := constant.ETH_DECIMAL
-	if _tokenType == "usdt" {
-		targetDecimal = constant.USDT_DECIMAL
-	}
-
-	plain := decimal.NewFromFloat(targetDecimal)
-	calculated := amount.Mul(plain)
-
-	return calculated.String()
+type CoinGeckoApiType struct {
+	Dai       Currency `json:"dai"`
+	PaypalUsd Currency `json:"paypal-usd"`
+	Tether    Currency `json:"tether"`
+	UsdCoin   Currency `json:"usd-coin"`
+	Usds      Currency `json:"usds"`
 }
 
-/*
-@return e.g `N*1e18`
-*/
-func toWeiAsExponent(_amount string, _tokenType string) string {
-	targetDecimal := constant.ETH_DECIMAL
-	if _tokenType == "usdt" {
-		targetDecimal = constant.USDT_DECIMAL
+func setStatusColor(value float32) string {
+	var color string = "green"
+
+	if value <= constant.ALERT_DEPEGGING_MIN || value >= constant.ALERT_DEPEGGING_MAX {
+		color = "red"
 	}
 
-	toFloat, _ := strconv.ParseFloat(_amount, 64)
-	target := fmt.Sprintf("%.e", toFloat*targetDecimal)
+	html := fmt.Sprintf(`
+		<div class="w-4 flex justify-center">
+			<div class="w-4 h-4 rounded-full bg-%s-500"></div>
+		</div>
+	`, color)
 
-	converted := strings.Replace(target, "+0", "", 1)
-	return converted
+	return html
+}
+
+func FinalizePeggingStats(data CoinGeckoApiType) string {
+	html := fmt.Sprintf(`
+		<div class="flex justify-center">
+			<ul class="flex flex-col p-6 text-3xl gap-2">
+				<li class="flex items-center gap-2">
+					%s
+					<div>DAI: %f</div>
+				</li>
+				<li class="flex items-center gap-2">
+					%s
+					<div>PYUSD: %f</div>
+				</li>
+				<li class="flex items-center gap-2">
+					%s
+					<div>USDT: %f</div>
+				</li>
+				<li class="flex items-center gap-2">
+					%s
+					<div>USDC: %f</div>
+				</li>
+				<li class="flex items-center gap-2">
+					%s
+					<div>USDS: %f</div>
+				</li>
+			</ul>
+		</div>
+		`,
+		setStatusColor(data.Dai.Usd), data.Dai.Usd,
+		setStatusColor(data.PaypalUsd.Usd), data.PaypalUsd.Usd,
+		setStatusColor(data.Tether.Usd), data.Tether.Usd,
+		setStatusColor(data.UsdCoin.Usd), data.UsdCoin.Usd,
+		setStatusColor(data.Usds.Usd), data.Usds.Usd,
+	)
+
+	return html
 }

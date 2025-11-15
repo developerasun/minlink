@@ -2,14 +2,12 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"math/rand"
 	"os"
 	"strconv"
 
-	// "math/rand"
 	"net/http"
 	"time"
 
@@ -94,6 +92,7 @@ func RenderStats(ctx *gin.Context) {
 		select {
 		case <-ticker.C:
 
+			var data pkg.CoinGeckoApiType
 			if isProduction {
 				log.Println("requesting real coingekco api in production")
 
@@ -104,75 +103,27 @@ func RenderStats(ctx *gin.Context) {
 				raw, _ := io.ReadAll(response.Body)
 				response.Body.Close() // @dev prevent FD leak
 
-				var data CoinGeckoApiResponse
 				if err := json.Unmarshal(raw, &data); err != nil {
 					log.Println("RenderStats: " + err.Error())
 				}
 
+				html := pkg.FinalizePeggingStats(data)
+
 				// @dev queue stream data to response buffer
-				ctx.SSEvent(constant.SSE_STATS, SseStatsResponse{
-					Data: data,
-				})
+				ctx.SSEvent(constant.SSE_STATS, html)
 			} else {
 				log.Println("immitating dummy coingekco api in development")
 
-				data := CoinGeckoApiResponse{
-					Dai:       Currency{Usd: rand.Float32()},
-					PaypalUsd: Currency{Usd: rand.Float32()},
-					Tether:    Currency{Usd: rand.Float32()},
-					UsdCoin:   Currency{Usd: rand.Float32()},
-					Usds:      Currency{Usd: rand.Float32()},
+				data = pkg.CoinGeckoApiType{
+					Dai:       pkg.Currency{Usd: rand.Float32()},
+					PaypalUsd: pkg.Currency{Usd: rand.Float32()},
+					Tether:    pkg.Currency{Usd: rand.Float32()},
+					UsdCoin:   pkg.Currency{Usd: rand.Float32()},
+					Usds:      pkg.Currency{Usd: rand.Float32()},
 				}
 
-				alert := func(value float32) string {
-					if value <= constant.ALERT_DEPEGGING_MIN || value >= constant.ALERT_DEPEGGING_MAX {
-						return `
-						  <div class="w-4 flex justify-center">
-								<div class="w-4 h-4 rounded-full bg-red-500"></div>
-							</div>
-						`
-					}
-					return `
-						<div class="w-4 flex justify-center">
-							<div class="w-4 h-4 rounded-full bg-green-500"></div>
-						</div>
-					`
-				}
-
-				_html := fmt.Sprintf(`
-				<div class="flex justify-center">
-					<ul class="flex flex-col p-6 text-3xl gap-2">
-						<li class="flex items-center gap-2">
-							%s
-							<div>DAI: %f</div>
-						</li>
-						<li class="flex items-center gap-2">
-							%s
-							<div>PYUSD: %f</div>
-						</li>
-						<li class="flex items-center gap-2">
-							%s
-							<div>USDT: %f</div>
-						</li>
-						<li class="flex items-center gap-2">
-							%s
-							<div>USDC: %f</div>
-						</li>
-						<li class="flex items-center gap-2">
-							%s
-							<div>USDS: %f</div>
-						</li>
-					</ul>
-				</div>
-				`,
-					alert(data.Dai.Usd), data.Dai.Usd,
-					alert(data.PaypalUsd.Usd), data.PaypalUsd.Usd,
-					alert(data.Tether.Usd), data.Tether.Usd,
-					alert(data.UsdCoin.Usd), data.UsdCoin.Usd,
-					alert(data.Usds.Usd), data.Usds.Usd,
-				)
-
-				ctx.SSEvent(constant.SSE_STATS, _html)
+				html := pkg.FinalizePeggingStats(data)
+				ctx.SSEvent(constant.SSE_STATS, html)
 			}
 
 			// @dev deliver the buffer to client
