@@ -1,10 +1,7 @@
 package api
 
 import (
-	"encoding/json"
-	"io"
 	"log"
-	"math/rand"
 	"os"
 	"strconv"
 
@@ -88,6 +85,14 @@ func RenderStats(ctx *gin.Context) {
 	ticker := time.NewTicker(time.Second * time.Duration(interval))
 	defer ticker.Stop()
 
+	// handle first event right away
+	data := pkg.GetDataSources()
+	html := pkg.FinalizePeggingStats(data)
+	log.Println("handle first event: ", data)
+	ctx.SSEvent(constant.SSE_STATS, html)
+	ctx.Writer.Flush()
+
+	// stream next events when client stays on page
 	for {
 		select {
 		case <-ticker.C:
@@ -96,17 +101,7 @@ func RenderStats(ctx *gin.Context) {
 			if isProduction {
 				log.Println("requesting real coingekco api in production")
 
-				request, _ := http.NewRequest(http.MethodGet, constant.ENDPOINT_COINS, nil)
-				client := http.Client{}
-				response, _ := client.Do(request)
-
-				raw, _ := io.ReadAll(response.Body)
-				response.Body.Close() // @dev prevent FD leak
-
-				if err := json.Unmarshal(raw, &data); err != nil {
-					log.Println("RenderStats: " + err.Error())
-				}
-
+				data := pkg.GetDataSources()
 				html := pkg.FinalizePeggingStats(data)
 
 				// @dev queue stream data to response buffer
@@ -114,14 +109,7 @@ func RenderStats(ctx *gin.Context) {
 			} else {
 				log.Println("immitating dummy coingekco api in development")
 
-				data = pkg.CoinGeckoApiType{
-					Dai:       pkg.Currency{Usd: rand.Float32()},
-					PaypalUsd: pkg.Currency{Usd: rand.Float32()},
-					Tether:    pkg.Currency{Usd: rand.Float32()},
-					UsdCoin:   pkg.Currency{Usd: rand.Float32()},
-					Usds:      pkg.Currency{Usd: rand.Float32()},
-				}
-
+				data = pkg.GetDummyDataSources()
 				html := pkg.FinalizePeggingStats(data)
 				ctx.SSEvent(constant.SSE_STATS, html)
 			}
@@ -138,7 +126,6 @@ func RenderStats(ctx *gin.Context) {
 			return
 		}
 	}
-
 }
 
 // RenderMainPage godoc

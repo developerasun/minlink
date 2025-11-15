@@ -1,7 +1,12 @@
 package pkg
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
+	"log"
+	"math/rand"
+	"net/http"
 
 	"github.com/developerasun/minlink/internal/constant"
 )
@@ -16,6 +21,32 @@ type CoinGeckoApiType struct {
 	Tether    Currency `json:"tether"`
 	UsdCoin   Currency `json:"usd-coin"`
 	Usds      Currency `json:"usds"`
+}
+
+func GetDummyDataSources() CoinGeckoApiType {
+	return CoinGeckoApiType{
+		Dai:       Currency{Usd: rand.Float32()},
+		PaypalUsd: Currency{Usd: rand.Float32()},
+		Tether:    Currency{Usd: rand.Float32()},
+		UsdCoin:   Currency{Usd: rand.Float32()},
+		Usds:      Currency{Usd: rand.Float32()},
+	}
+}
+
+func GetDataSources() CoinGeckoApiType {
+	var data CoinGeckoApiType
+	request, _ := http.NewRequest(http.MethodGet, constant.ENDPOINT_COINS, nil)
+	client := http.Client{}
+	response, _ := client.Do(request)
+
+	raw, _ := io.ReadAll(response.Body)
+	response.Body.Close() // @dev prevent FD leak
+
+	if err := json.Unmarshal(raw, &data); err != nil {
+		log.Println("GetDataSources: " + err.Error())
+	}
+
+	return data
 }
 
 func setStatusColor(value float32) string {
