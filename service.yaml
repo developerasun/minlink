@@ -9,7 +9,7 @@ services:
     image: minlink-backend:latest
     # open ports in overlay network to communicate each other
     ports:
-      - "3010:3010"
+      - "3011:3011"
     volumes:
       - ./.run.env:/minlink/.run.env
       - ./assets:/minlink/assets

@@ -17,6 +17,6 @@ RUN mkdir -p cmd templates assets logs
 COPY --from=runtime /minlink/cmd/server.run ./cmd
 COPY --from=runtime /minlink/templates/ ./templates
 COPY --from=runtime /minlink/assets/ ./assets
-EXPOSE 3010
+EXPOSE 3011
 
 CMD ["./cmd/server.run"]
