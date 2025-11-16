@@ -7,6 +7,8 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/developerasun/minlink/internal/constant"
 )
@@ -67,7 +69,8 @@ func setStatusColor(value float32) string {
 
 func FinalizePeggingStats(data CoinGeckoApiType) string {
 	html := fmt.Sprintf(`
-		<div class="flex justify-center">
+		<div class="flex flex-col justify-center items-center">
+			<div class="mx-auto text-center">Time: %s</div>
 			<ul class="flex flex-col p-6 text-3xl gap-2">
 				<li class="flex items-center gap-2">
 					%s
@@ -92,6 +95,8 @@ func FinalizePeggingStats(data CoinGeckoApiType) string {
 			</ul>
 		</div>
 		`,
+		// @dev in the format of: 2025-11-16 17:43:09.257622246
+		(strings.Split(time.Now().Local().String(), "+")[0]),
 		setStatusColor(data.Dai.Usd), data.Dai.Usd,
 		setStatusColor(data.PaypalUsd.Usd), data.PaypalUsd.Usd,
 		setStatusColor(data.Tether.Usd), data.Tether.Usd,
