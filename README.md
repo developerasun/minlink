@@ -9,7 +9,7 @@ Targeting Ethereum Mainnet specifically.
 
 <div align="center">
 
-<img src="./docs/readme/2.png" width="49%" />
+<img src="./docs/readme/1.png" width="49%" />
 
 </div>
 
@@ -21,7 +21,7 @@ Then is stable coin really stable?
 
 <div align="center">
 
-<img src="./docs/readme/1.jpg" width="49%" />
+<img src="./docs/readme/2.jpg" width="49%" />
 
 </div>
 
